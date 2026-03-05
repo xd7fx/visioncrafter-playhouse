@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
-import type { Platform } from '@/lib/agents';
+
+type Platform = 'youtube';
 
 interface PlatformContextType {
   platform: Platform;

@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { getAgentById } from '@/lib/agents';
+import { getToolById } from '@/lib/agents';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -14,24 +14,24 @@ const iconMap: Record<string, any> = { BarChart3, TrendingUp, Type, Image, Light
 const AgentWorkspace = () => {
   const { agentId } = useParams();
   const navigate = useNavigate();
-  const agent = getAgentById(agentId || '');
+  const tool = getToolById(agentId || '');
   const [output, setOutput] = useState('');
   const [loading, setLoading] = useState(false);
 
-  if (!agent) {
+  if (!tool) {
     return (
       <div className="flex items-center justify-center h-full">
-        <p className="text-muted-foreground">Agent not found.</p>
+        <p className="text-muted-foreground">Tool not found.</p>
       </div>
     );
   }
 
-  const Icon = iconMap[agent.iconName];
+  const Icon = iconMap[tool.iconName];
 
   const handleGenerate = () => {
     setLoading(true);
     setTimeout(() => {
-      setOutput(`# Sample ${agent.name} Output\n\nThis is a placeholder output from the **${agent.name}**. Once connected to the AI backend, this will show real generated content.\n\n## Key Points\n- Point one with actionable insight\n- Point two with data-driven recommendation\n- Point three with creative suggestion\n\n> "Great content starts with great tools." — Sunnaa Studio`);
+      setOutput(`# Sample ${tool.name} Output\n\nThis is a preview of what **${tool.name}** can do for you. Once connected, you'll see real results tailored to your channel.\n\n## Highlights\n- Actionable insight based on your content\n- Data-driven recommendation for growth\n- Creative suggestion to stand out\n\n> "Great content starts with great tools." — Sunnaa Studio`);
       setLoading(false);
     }, 2000);
   };
@@ -45,7 +45,7 @@ const AgentWorkspace = () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${agent.id}-output.txt`;
+    a.download = `${tool.id}-output.txt`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -61,8 +61,8 @@ const AgentWorkspace = () => {
           <Icon size={20} className="text-primary-foreground" />
         </div>
         <div>
-          <h1 className="text-xl font-bold">{agent.name}</h1>
-          <p className="text-sm text-muted-foreground">{agent.description}</p>
+          <h1 className="text-xl font-bold">{tool.name}</h1>
+          <p className="text-sm text-muted-foreground">{tool.description}</p>
         </div>
       </div>
 
@@ -71,7 +71,7 @@ const AgentWorkspace = () => {
         {/* Input Panel */}
         <div className="bg-card border border-border rounded-2xl p-6 space-y-5">
           <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">Input</h3>
-          <AgentInputFields agentId={agent.id} />
+          <ToolInputFields toolId={tool.id} />
           <Button variant="gradient" className="w-full" size="lg" onClick={handleGenerate} disabled={loading}>
             {loading ? <><Loader2 size={18} className="animate-spin" /> Generating...</> : <><Sparkles size={18} /> Generate</>}
           </Button>
@@ -83,7 +83,7 @@ const AgentWorkspace = () => {
           {loading ? (
             <div className="flex flex-col items-center justify-center py-16 gap-3">
               <Loader2 size={32} className="animate-spin text-primary" />
-              <p className="text-sm text-muted-foreground animate-pulse">Agent is working...</p>
+              <p className="text-sm text-muted-foreground animate-pulse">Working on it...</p>
             </div>
           ) : output ? (
             <div className="space-y-4">
@@ -105,8 +105,8 @@ const AgentWorkspace = () => {
           ) : (
             <div className="flex flex-col items-center justify-center py-16 gap-3 text-muted-foreground">
               <Sparkles size={32} className="opacity-30" />
-              <p className="text-sm">Your output will appear here</p>
-              <p className="text-xs opacity-60">Fill in the inputs and hit generate</p>
+              <p className="text-sm">Your results will appear here</p>
+              <p className="text-xs opacity-60">Fill in the details and hit Generate</p>
             </div>
           )}
         </div>
@@ -115,15 +115,14 @@ const AgentWorkspace = () => {
   );
 };
 
-// Input fields per agent type
-const AgentInputFields = ({ agentId }: { agentId: string }) => {
-  switch (agentId) {
+const ToolInputFields = ({ toolId }: { toolId: string }) => {
+  switch (toolId) {
     case 'title':
       return (
         <>
           <div className="space-y-2">
             <Label>What is your video about?</Label>
-            <Textarea placeholder="Describe the video topic..." className="bg-secondary border-border rounded-[10px] resize-none" rows={3} />
+            <Textarea placeholder="Describe your video topic..." className="bg-secondary border-border rounded-[10px] resize-none" rows={3} />
           </div>
           <div className="space-y-2">
             <Label>Keywords to include (optional)</Label>
@@ -135,8 +134,8 @@ const AgentInputFields = ({ agentId }: { agentId: string }) => {
       return (
         <>
           <div className="space-y-2">
-            <Label>Confirmed video title</Label>
-            <Input placeholder="Your final video title" className="bg-secondary border-border rounded-[10px]" />
+            <Label>Your video title</Label>
+            <Input placeholder="Enter your final video title" className="bg-secondary border-border rounded-[10px]" />
           </div>
           <div className="space-y-2">
             <Label>Color scheme</Label>
@@ -150,7 +149,7 @@ const AgentInputFields = ({ agentId }: { agentId: string }) => {
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>Include face?</Label>
+            <Label>Include a face?</Label>
             <div className="flex gap-2">
               {['Yes', 'No'].map(v => (
                 <button key={v} className="flex-1 py-2 text-sm rounded-[10px] border border-border bg-secondary hover:bg-muted transition-colors">{v}</button>
@@ -167,7 +166,7 @@ const AgentInputFields = ({ agentId }: { agentId: string }) => {
             <Textarea placeholder="Any specific direction you want ideas around..." className="bg-secondary border-border rounded-[10px] resize-none" rows={3} />
           </div>
           <div className="space-y-2">
-            <Label>Format preference</Label>
+            <Label>Video format</Label>
             <Select>
               <SelectTrigger className="bg-secondary border-border rounded-[10px]"><SelectValue placeholder="Any format" /></SelectTrigger>
               <SelectContent>
@@ -183,15 +182,15 @@ const AgentInputFields = ({ agentId }: { agentId: string }) => {
       return (
         <>
           <div className="space-y-2">
-            <Label>Confirmed video title</Label>
-            <Input placeholder="Your final video title" className="bg-secondary border-border rounded-[10px]" />
+            <Label>Your video title</Label>
+            <Input placeholder="Enter your final video title" className="bg-secondary border-border rounded-[10px]" />
           </div>
           <div className="space-y-2">
-            <Label>Hook pattern</Label>
+            <Label>Hook style</Label>
             <Select>
               <SelectTrigger className="bg-secondary border-border rounded-[10px]"><SelectValue placeholder="Auto" /></SelectTrigger>
               <SelectContent>
-                {['Auto', 'Preview', 'Curiosity Escalation', 'Problem Amplification', 'Immediate Value'].map(p => (
+                {['Auto', 'Preview', 'Curiosity', 'Problem', 'Immediate Value'].map(p => (
                   <SelectItem key={p} value={p.toLowerCase()}>{p}</SelectItem>
                 ))}
               </SelectContent>
@@ -207,7 +206,7 @@ const AgentInputFields = ({ agentId }: { agentId: string }) => {
             <Input placeholder="What's the video about?" className="bg-secondary border-border rounded-[10px]" />
           </div>
           <div className="space-y-2">
-            <Label>Paste your confirmed hook</Label>
+            <Label>Paste your opening hook</Label>
             <Textarea placeholder="Paste the hook you want to use..." className="bg-secondary border-border rounded-[10px] resize-none" rows={3} />
           </div>
           <div className="space-y-2">

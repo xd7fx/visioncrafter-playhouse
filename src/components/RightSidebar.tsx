@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import sunnaaLogo from '@/assets/sunnaa-logo.png';
 
 export const RightSidebar = () => {
-  const { platform, setPlatform } = usePlatform();
+  const { platform } = usePlatform();
   const [showMenu, setShowMenu] = useState(false);
   const navigate = useNavigate();
 
@@ -41,12 +41,7 @@ export const RightSidebar = () => {
 
       {/* YouTube — Active */}
       <button
-        onClick={() => setPlatform('youtube')}
-        className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
-          platform === 'youtube'
-            ? 'ring-2 ring-primary glow-cyan scale-110'
-            : 'opacity-50 hover:opacity-80'
-        }`}
+        className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ring-2 ring-primary glow-cyan scale-110`}
         style={{ background: '#FF0000' }}
         title="YouTube"
       >
@@ -70,7 +65,7 @@ export const RightSidebar = () => {
 
       <div className="w-8 h-px bg-border mt-3" />
 
-      {/* Coming Soon */}
+      {/* Coming Soon platforms */}
       <div className="flex flex-col items-center gap-2.5 opacity-25">
         <Instagram size={16} />
         <Twitter size={16} />
